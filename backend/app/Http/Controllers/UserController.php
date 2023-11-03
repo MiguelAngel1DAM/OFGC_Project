@@ -1,53 +1,82 @@
 <?php
 
-namespace App\Http\Controllers\ofgc;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User; // Import the correct User model namespace
 
 class UserController extends Controller
 {
+    // GET
     public function index()
     {
-        $User = Users::all();
-        return response()->json($User);
+        $users = User::all(); // Change to User::all()
+        return response()->json($users);
     }
 
+    // POST
     public function store(Request $request)
     {
-        $User = new Users;
-        $User->name = $request->name;
-        $User->lastname = $request->lastname;
-        $User->email = $request->email;
-        $User->password = $request->password;
-        $User->Icon = $request->Icon;
-        $User->save();
+        $user = new User; // Change to User
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->Icon = $request->Icon;
+        $user->save();
         return response()->json([
             "message" => "User added"
-        ],201);
+        ], 201);
     }
-
+    // GET by id
     public function show($id)
     {
-        $User = Users::find($id);
-        if(!empty($User))
-        {
-            return response()->json($User);
-        }
-        else
-        {
+        $user = User::find($id);
+        if (!empty($user)) {
+            return response()->json($user);
+        } else {
             return response()->json([
-                "messaje" => "User not found"
+                "message" => "User not found"
             ], 404);
         }
     }
 
+    // PUT
     public function update(Request $request, $id)
     {
-        if(Users::where('id', $id)->exist()) {
-            $User = Users::find($id);
-            $User->name = is_null($request->name) ? $User->name : $request->name;
-            
+        if (User::where('id', $id)->exists()) {
+            $user = User::find($id);
+            $user->name = is_null($request->name) ? $user->name : $request->name;
+            $user->lastname = is_null($request->lastname) ? $user->lastname : $request->lastname;
+            $user->email = is_null($request->email) ? $user->email : $request->email;
+            $user->password = is_null($request->password) ? $user->password : $request->password;
+            $user->Icon = is_null($request->Icon) ? $user->Icon : $request->Icon;
+
+            $user->save();
+            return response()->json([
+                "message" => "User updated"
+            ], 404);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
+        }
+    }
+
+    // DELETE
+    public function destroy($id)
+    {
+        if (User::where('id', $id)->exists()) {
+            $user = User::find($id);
+            $user->delete();
+
+            return response()->json([
+                "message" => "User deleted"
+            ], 202);
+        } else {
+            return response()->json([
+                "message" => "User not found"
+            ], 404);
         }
     }
 }
