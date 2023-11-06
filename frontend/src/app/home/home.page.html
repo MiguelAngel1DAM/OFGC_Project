@@ -1,0 +1,67 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+  </ion-header>
+
+  <div id="container">
+    <div *ngIf="!isLoggedIn && isLoginView">
+      <h2>Iniciar Sesión</h2>
+      <div class="form-group">
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" [(ngModel)]="username" name="username"></ion-input>
+      </div>
+      <div class="form-group">
+        <ion-label position="floating">Apellidos</ion-label>
+        <ion-input type="text" [(ngModel)]="lastname" name="lastname"></ion-input>
+      </div>
+      <div class="form-group">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="newUser.email" name="newEmail"></ion-input>
+      </div>      
+      <div class="form-group">
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="password" name="password"></ion-input>
+      </div>
+      <ion-button (click)="login()" expand="full" color="success">Iniciar Sesión</ion-button>
+      <div class="error-message" *ngIf="errorMessage">{{errorMessage}}</div>
+    </div>
+
+    <div *ngIf="!isLoggedIn && !isLoginView">
+      <h2>Registrarse</h2>
+      <div class="form-group">
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" [(ngModel)]="newUser.username" name="newUsername"></ion-input>
+      </div>
+      <div class="form-group">
+        <ion-label position="floating">Apellidos</ion-label>
+        <ion-input type="text" [(ngModel)]="newUser.lastname" name="newUserlastname"></ion-input>
+      </div>
+      <div class="form-group">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" [(ngModel)]="newUser.email" name="newEmail"></ion-input>
+      </div>      
+      <div class="form-group">
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="newUser.password" name="newPassword"></ion-input>
+      </div>
+      
+      <ion-button (click)="register()" expand="full">Registrarse</ion-button>
+      <div class="success-message" *ngIf="registrationSuccessMessage">{{registrationSuccessMessage}}</div>
+    </div>
+
+    <div *ngIf="isLoggedIn">
+      <h2>Bienvenido</h2>
+
+    </div>
+
+    <ion-button (click)="toggleView()" expand="full" color="warning">
+      {{ isLoginView ? 'Registrar' : 'Iniciar Sesión' }}
+    </ion-button>
+
+    <div *ngIf="isLoggedIn">
+      <h2>Bienvenido</h2>
+      <ion-button (click)="logout()" expand="full" color="success">Cerrar Sesión</ion-button>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">{{errorMessage}}</div>
+  </div>
+</ion-content>
