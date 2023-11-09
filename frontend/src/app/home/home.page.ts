@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { HomeServicesService } from '../services/home.services.service';
+import { UsersServicesService } from '../services/users.services.service';
+import { StorageService } from '../services/storage.service';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-home',
@@ -7,51 +9,49 @@ import { HomeServicesService } from '../services/home.services.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  username = '';
+  email = '';
   password = '';
-  lastname = '';
   errorMessage = '';
   registrationSuccessMessage = '';
   isLoggedIn = false;
 
-  newUser = {
+  newUser: User = {
     username: '',
     lastname: '',
     email: '',
-    password: '',    
+    password: '',
   };
 
   isLoginView = true;
 
-  constructor(private homeServicesService: HomeServicesService) {}
+  constructor(private usersServicesService: UsersServicesService, private localStorage: StorageService) { }
 
   ngOnInit() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const isLoggedIn = this.localStorage.getItem('isLoggedIn');
     this.isLoggedIn = isLoggedIn === 'true';
-  }
-
+    console.log('isLoggedIn:', this.isLoggedIn);
+    console.log('isLoginView:', this.isLoginView);
+  }  
   toggleView() {
     this.isLoginView = !this.isLoginView;
     this.errorMessage = '';
     this.registrationSuccessMessage = '';
   }
-
+     
   login() {
     if (this.isLoginView) {
-      const loginPayload = {
-        username: this.username,
+      const loginData = {
+        email: this.email,
         password: this.password
       };
 
-      this.homeServicesService.authenticateUser(loginPayload).subscribe(
+      this.usersServicesService.login(loginData).subscribe(
         (response: any) => {
+          this.localStorage.setItem('isLoggedIn', 'true');
           this.isLoggedIn = true;
-          this.errorMessage = '';
-
-          localStorage.setItem('isLoggedIn', 'true');
         },
         (error: any) => {
-          this.errorMessage = 'Credenciales incorrectas. Por favor, inténtalo de nuevo.';
+          this.errorMessage = 'Login failed. Please try again.';
         }
       );
     }
@@ -62,26 +62,21 @@ export class HomePage {
       this.errorMessage = 'Email is required.';
       return;
     }
-  
-    this.homeServicesService.createUser(this.newUser).subscribe(
+
+    this.usersServicesService.createUser(this.newUser).subscribe(
       (response: any) => {
-        this.registrationSuccessMessage = 'Registro exitoso. Ahora puedes iniciar sesión.';
-        this.newUser = {
-          username: '',
-          lastname: '',
-          email: '',
-          password: '', 
-        };
+        this.registrationSuccessMessage = 'Registration successful. You can now log in.';
+        this.newUser = { username: '', lastname: '', email: '', password: '' };
         this.errorMessage = '';
       },
       (error: any) => {
-        this.errorMessage = 'Error durante el registro. Por favor, inténtalo de nuevo.';
+        this.errorMessage = 'Error during registration. Please try again.';
       }
     );
   }
 
   logout() {
-    localStorage.removeItem('isLoggedIn');
+    this.localStorage.removeItem('isLoggedIn');
     this.isLoggedIn = false;
     this.errorMessage = '';
     this.registrationSuccessMessage = '';

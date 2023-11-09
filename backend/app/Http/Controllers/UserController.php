@@ -3,31 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; // Import the correct User model namespace
+use App\Models\User;
 
 class UserController extends Controller
 {
     // GET
     public function index()
     {
-        $users = User::all(); // Change to User::all()
+        $users = User::all();
         return response()->json($users);
     }
 
-    // POST
-    public function store(Request $request)
-    {
-        $user = new User; // Change to User
-        $user->name = $request->name;
-        $user->lastname = $request->lastname;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->Icon = $request->Icon;
-        $user->save();
-        return response()->json([
-            "message" => "User added"
-        ], 201);
-    }
+// POST
+
+public function store(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8',
+        'name' => 'nullable',
+        'lastname' => 'nullable',
+        'Icon' => 'nullable',
+    ]);
+
+    $user = new User();
+    $user->name = $request->input('name');
+    $user->lastname = $request->input('lastname');
+    $user->email = $request->input('email');
+    $user->Icon = $request->input('Icon');
+    $user->password = bcrypt($request->input('password'));
+    $user->save();
+
+    return response()->json(['message' => 'User registered successfully'], 201);
+}
+
     // GET by id
     public function show($id)
     {
