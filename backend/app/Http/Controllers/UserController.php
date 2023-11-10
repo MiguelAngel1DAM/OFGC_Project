@@ -7,7 +7,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    // GET
+// GET
     public function index()
     {
         $users = User::all();
@@ -20,7 +20,7 @@ public function store(Request $request)
 {
     $request->validate([
         'email' => 'required|email|unique:users',
-        'password' => 'required|min:8',
+        'password' => 'required|min:4',
         'name' => 'nullable',
         'lastname' => 'nullable',
         'Icon' => 'nullable',
@@ -33,7 +33,6 @@ public function store(Request $request)
     $user->Icon = $request->input('Icon');
     $user->password = bcrypt($request->input('password'));
     $user->save();
-
     return response()->json(['message' => 'User registered successfully'], 201);
 }
 
