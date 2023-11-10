@@ -28,4 +28,3 @@ npm install
 - [Laravel](https://laravel.com/) - The web framework used
 - [Ionic](https://ionicframework.com/) - Framework to desing the frontend
 - [MySQL](https://www.mysql.com/) - Database management system
--
